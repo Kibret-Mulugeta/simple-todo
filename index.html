@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Todo — Beautiful UI</title>
+  <link rel="icon" href="public/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in { animation: fadeIn .22s ease both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+    .card-hover:hover { transform: translateY(-4px); transition: all .18s ease; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen antialiased text-slate-800">
+
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <header class="mb-8">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Simple<span class="text-indigo-600">Todo</span></h1>
+          <p class="text-sm text-slate-500 mt-1">A small task manager — local & deployed. Folder: <code class="text-xs bg-slate-100 px-1 rounded">simple-todo</code></p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-sm text-slate-600">Logged in as <strong>Kibret-Mulugeta</strong></div>
+          <a href="#" id="githubLink" class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/60 border shadow-sm hover:shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 4.86 3.16 8.99 7.56 10.45.55.1.75-.24.75-.53 0-.26-.01-.95-.01-1.86-3.08.67-3.73-1.48-3.73-1.48-.5-1.28-1.22-1.62-1.22-1.62-.99-.68.08-.66.08-.66 1.1.08 1.67 1.13 1.67 1.13.98 1.68 2.58 1.2 3.21.92.1-.72.38-1.2.7-1.48-2.46-.28-5.05-1.23-5.05-5.48 0-1.21.43-2.2 1.14-2.98-.12-.28-.5-1.42.11-2.96 0 0 .93-.3 3.05 1.13.88-.25 1.82-.38 2.76-.38s1.88.13 2.76.38c2.12-1.43 3.05-1.13 3.05-1.13.61 1.54.23 2.68.11 2.96.71.78 1.14 1.77 1.14 2.98 0 4.26-2.6 5.2-5.07 5.47.39.34.74 1.01.74 2.04 0 1.47-.01 2.65-.01 3.01 0 .29.2.64.76.53 4.4-1.47 7.56-5.6 7.56-10.45C23.25 5.48 18.27.5 12 .5z"/></svg>
+            <span class="text-xs">GitHub</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <section class="lg:col-span-1 bg-white rounded-2xl p-6 shadow">
+        <h2 class="text-lg font-semibold mb-3">Add New Task</h2>
+
+        <form id="taskForm" class="space-y-4">
+          <div>
+            <label class="text-sm text-slate-600">Title</label>
+            <input id="title" required class="mt-1 block w-full border border-slate-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-300 focus:outline-none" placeholder="e.g. Finish thesis section" />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600">Description</label>
+            <textarea id="description" rows="4" class="mt-1 block w-full border border-slate-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-300 focus:outline-none" placeholder="Details (optional)"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <label class="inline-flex items-center gap-2 text-sm">
+              <input type="checkbox" id="completed" class="h-4 w-4"/>
+              <span>Mark as completed</span>
+            </label>
+            <button type="submit" class="ml-auto inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+              Add Task
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-6 border-t pt-4 text-sm text-slate-600">
+          <div class="flex items-center justify-between mb-2">
+            <div>Search</div>
+            <div id="taskCount" class="text-slate-800 font-semibold">0 tasks</div>
+          </div>
+
+          <div class="flex gap-2 items-center">
+            <input id="searchInput" placeholder="Search tasks..." class="flex-1 border border-slate-200 rounded px-3 py-2 focus:ring-2 focus:ring-indigo-200" />
+            <button id="clearSearch" class="px-3 py-2 text-sm text-slate-500">Clear</button>
+          </div>
+
+          <div class="mt-4">
+            <div class="flex gap-2" role="tablist" id="filterTabs">
+              <button class="filter-btn px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-600" data-filter="all">All</button>
+              <button class="filter-btn px-3 py-1 rounded-full text-sm bg-slate-50" data-filter="active">Active</button>
+              <button class="filter-btn px-3 py-1 rounded-full text-sm bg-slate-50" data-filter="completed">Completed</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lg:col-span-2">
+        <div class="bg-white rounded-2xl p-4 shadow">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-medium">Tasks</h3>
+            <div class="flex items-center gap-3">
+              <button id="refreshBtn" class="text-sm text-slate-500 hover:text-slate-700">Refresh</button>
+            </div>
+          </div>
+
+          <div id="tasksContainer" class="space-y-3"></div>
+
+          <div id="emptyState" class="text-center text-slate-500 py-10 hidden">
+            <div class="text-xl font-medium">No tasks yet</div>
+            <div class="mt-2">Create your first task using the form on the left.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-lg fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <h4 id="modalTitle" class="font-semibold">Edit Task</h4>
+        <button id="closeModal" class="text-slate-500">Close</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed right-6 bottom-6 z-50 hidden">
+    <div id="toastMsg" class="bg-slate-900 text-white px-4 py-2 rounded shadow">Saved</div>
+  </div>
+
+<script>
+/* ====== IMPORTANT: production API endpoint for Vercel ====== */
+const API_BASE = '/api/tasks'; // <- serverless endpoint on Vercel
+
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
+const el = (tag, cls='') => Object.assign(document.createElement(tag), { className: cls });
+
+function showToast(msg = 'Saved', timeout = 1800){
+  const t = qs('#toast');
+  qs('#toastMsg').textContent = msg;
+  t.classList.remove('hidden');
+  setTimeout(()=> t.classList.add('hidden'), timeout);
+}
+
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"'`=\/]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'}[c])); }
+
+async function fetchTasks(){ const r = await fetch(API_BASE); if(!r.ok) throw new Error('Failed'); return r.json(); }
+async function createTask(payload){ const r = await fetch(API_BASE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)}); return r.json(); }
+async function updateTask(id, payload){ const r = await fetch(API_BASE + '?id=' + id, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)}); return r.json(); }
+async function deleteTask(id){ const r = await fetch(API_BASE + '?id=' + id, { method:'DELETE'}); return r.json(); }
+
+function buildTaskCard(task){
+  const wrapper = el('div', 'p-4 border rounded-lg bg-white shadow-sm card-hover flex items-start gap-4 fade-in');
+  const cbWrap = el('div', 'flex-shrink-0');
+  const cb = el('input', ''); cb.type = 'checkbox'; cb.checked = !!task.completed; cb.dataset.id = task.id; cb.className = 'toggle-completed h-5 w-5';
+  cbWrap.appendChild(cb);
+
+  const body = el('div', 'flex-1');
+  const titleRow = el('div', 'flex items-start justify-between gap-3');
+  const titleBox = el('div', '');
+  const title = el('h4', task.completed ? 'text-slate-500 line-through font-semibold' : 'font-semibold');
+  title.innerText = task.title || '(no title)';
+  const desc = el('div', 'text-sm text-slate-500 mt-1'); desc.innerText = task.description || '';
+  titleBox.appendChild(title); titleBox.appendChild(desc);
+
+  const actions = el('div', 'flex items-center gap-2');
+  const viewBtn = el('button', 'text-xs px-2 py-1 border rounded text-slate-600'); viewBtn.innerText = 'View'; viewBtn.dataset.id = task.id;
+  const editBtn = el('button', 'text-xs px-2 py-1 border rounded text-indigo-600'); editBtn.innerText = 'Edit'; editBtn.dataset.id = task.id;
+  const delBtn = el('button', 'text-xs px-2 py-1 border rounded text-red-600'); delBtn.innerText = 'Delete'; delBtn.dataset.id = task.id;
+  actions.appendChild(viewBtn); actions.appendChild(editBtn); actions.appendChild(delBtn);
+
+  titleRow.appendChild(titleBox); titleRow.appendChild(actions);
+
+  const footer = el('div', 'mt-3 flex items-center justify-between text-xs text-slate-400');
+  const meta = el('div', 'flex items-center gap-3');
+  const created = new Date(task.created_at).toLocaleString();
+  const chip = el('span', task.completed ? 'px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-600' : 'px-2 py-0.5 rounded-full text-xs bg-yellow-50 text-yellow-600');
+  chip.innerText = task.completed ? 'Completed' : 'Active';
+  meta.appendChild(chip);
+  meta.appendChild(el('div','').appendChild(document.createTextNode('Created: ' + created)) || meta);
+
+  footer.appendChild(meta);
+  wrapper.appendChild(cbWrap);
+  body.appendChild(titleRow);
+  body.appendChild(footer);
+  wrapper.appendChild(body);
+  wrapper.dataset.id = task.id;
+
+  viewBtn.addEventListener('click', onView);
+  editBtn.addEventListener('click', onEdit);
+  delBtn.addEventListener('click', onDelete);
+  cb.addEventListener('change', onToggleCompleted);
+
+  return wrapper;
+}
+
+let tasksCache = [];
+let currentFilter = 'all';
+let currentSearch = '';
+
+async function loadAndRender(){
+  const container = qs('#tasksContainer');
+  container.innerHTML = 'Loading...';
+  try {
+    const tasks = await fetchTasks();
+    tasksCache = Array.isArray(tasks) ? tasks : [];
+    renderTasks();
+    updateCounts();
+  } catch (err){
+    container.innerHTML = '<div class="text-red-600 p-6">Failed to load tasks.</div>';
+    console.error(err);
+  }
+}
+
+function renderTasks(){
+  const container = qs('#tasksContainer');
+  container.innerHTML = '';
+  const filtered = tasksCache.filter(t => {
+    if (currentFilter === 'active' && t.completed) return false;
+    if (currentFilter === 'completed' && !t.completed) return false;
+    if (currentSearch && !(t.title||'').toLowerCase().includes(currentSearch) && !(t.description||'').toLowerCase().includes(currentSearch)) return false;
+    return true;
+  });
+  if (filtered.length === 0) {
+    qs('#emptyState').classList.remove('hidden');
+  } else {
+    qs('#emptyState').classList.add('hidden');
+    filtered.forEach(t => container.appendChild(buildTaskCard(t)));
+  }
+}
+
+qs('#taskForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const title = qs('#title').value.trim();
+  const description = qs('#description').value.trim();
+  const completed = qs('#completed').checked ? 1 : 0;
+  if (!title){ alert('Title required'); return; }
+  try {
+    await createTask({ title, description, completed });
+    qs('#taskForm').reset();
+    loadAndRender();
+    showToast('Task added');
+  } catch (err){ alert('Failed to add task'); }
+});
+
+qs('#refreshBtn').addEventListener('click', loadAndRender);
+qs('#clearSearch').addEventListener('click', () => { qs('#searchInput').value = ''; currentSearch=''; renderTasks(); updateCounts(); });
+qs('#searchInput').addEventListener('input', (e) => { currentSearch = e.target.value.trim().toLowerCase(); renderTasks(); updateCounts(); });
+
+qsa('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    qsa('.filter-btn').forEach(b => b.classList.remove('bg-indigo-50','text-indigo-600'));
+    btn.classList.add('bg-indigo-50','text-indigo-600');
+    currentFilter = btn.dataset.filter;
+    renderTasks();
+    updateCounts();
+  });
+});
+
+async function onToggleCompleted(e){
+  const id = e.target.dataset.id;
+  const completed = e.target.checked ? 1 : 0;
+  try {
+    await updateTask(id, { completed });
+    loadAndRender();
+    showToast('Status updated');
+  } catch (err) { alert('Update failed'); console.error(err); }
+}
+
+async function onView(e){
+  const id = e.target.dataset.id;
+  try {
+    const res = await fetch(API_BASE + '?id=' + id);
+    const t = await res.json();
+    showModal('View Task', `
+      <div class="space-y-3">
+        <div><strong>Title</strong><div class="text-slate-700">${escapeHtml(t.title)}</div></div>
+        <div><strong>Description</strong><div class="text-slate-500">${escapeHtml(t.description || '')}</div></div>
+        <div><strong>Completed</strong><div>${t.completed ? 'Yes' : 'No'}</div></div>
+        <div class="text-xs text-slate-400">Created: ${new Date(t.created_at).toLocaleString()}</div>
+      </div>
+    `);
+  } catch (err) { alert('Failed to load task'); }
+}
+
+function showModal(title, html){
+  qs('#modalTitle').innerText = title;
+  qs('#modalBody').innerHTML = html;
+  qs('#modal').classList.remove('hidden');
+  qs('#modal').classList.add('flex');
+}
+
+async function onEdit(e){
+  const id = e.target.dataset.id;
+  try {
+    const res = await fetch(API_BASE + '?id=' + id);
+    const t = await res.json();
+    showModal('Edit Task', `
+      <form id="editForm" class="space-y-4">
+        <div><label class="text-sm text-slate-600">Title</label><input id="editTitle" value="${escapeHtml(t.title)}" class="mt-1 block w-full border rounded px-3 py-2" /></div>
+        <div><label class="text-sm text-slate-600">Description</label><textarea id="editDescription" class="mt-1 block w-full border rounded px-3 py-2" rows="4">${escapeHtml(t.description || '')}</textarea></div>
+        <div class="flex items-center gap-3">
+          <label class="inline-flex items-center gap-2"><input type="checkbox" id="editCompleted" ${t.completed ? 'checked' : ''} /> <span>Completed</span></label>
+          <div class="ml-auto"><button id="saveEdit" type="button" class="bg-indigo-600 text-white px-4 py-2 rounded">Save</button></div>
+        </div>
+      </form>
+    `);
+    qs('#saveEdit').addEventListener('click', async () => {
+      const title = qs('#editTitle').value.trim();
+      const description = qs('#editDescription').value.trim();
+      const completed = qs('#editCompleted').checked ? 1 : 0;
+      if (!title) { alert('Title required'); return; }
+      await updateTask(id, { title, description, completed });
+      qs('#modal').classList.add('hidden');
+      loadAndRender();
+      showToast('Task updated');
+    });
+  } catch (err){ alert('Failed to load task'); }
+}
+
+async function onDelete(e){
+  const id = e.target.dataset.id;
+  if (!confirm('Delete this task?')) return;
+  try {
+    await deleteTask(id);
+    loadAndRender();
+    showToast('Task deleted');
+  } catch (err) { alert('Delete failed'); }
+}
+
+qs('#closeModal').addEventListener('click', () => { qs('#modal').classList.add('hidden'); });
+
+function updateCounts(){
+  const total = tasksCache.length;
+  const visible = tasksCache.filter(t => {
+    if (currentFilter === 'active' && t.completed) return false;
+    if (currentFilter === 'completed' && !t.completed) return false;
+    if (currentSearch && !(t.title||'').toLowerCase().includes(currentSearch) && !(t.description||'').toLowerCase().includes(currentSearch)) return false;
+    return true;
+  }).length;
+  qs('#taskCount').innerText = `${visible} / ${total}`;
+}
+
+loadAndRender();
+</script>
+</body>
+</html>
+  
