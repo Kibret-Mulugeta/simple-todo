@@ -1,10 +1,8 @@
 <?php
-// api/db.php — PDO MySQL connection for XAMPP local development
-
-$DB_HOST = '127.0.0.1';
-$DB_NAME = 'simple_todo';
-$DB_USER = 'root';
-$DB_PASS = ''; // default XAMPP root password is empty. Put password here if set.
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
 
 try {
     $pdo = new PDO(
@@ -22,3 +20,4 @@ try {
     echo json_encode(['error' => 'DB connection failed: ' . $e->getMessage()]);
     exit;
 }
+?>
